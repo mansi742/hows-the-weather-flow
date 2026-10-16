@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>How's the weather — lesson flow</title>
+<title>Unit 1 · first two chapters</title>
 <style>
   :root {
     --ink: #1c1915;
@@ -101,8 +101,9 @@
 </head>
 <body>
 <header>
-  <h1>How's the weather</h1>
-  <p class="lede">Unit 1, first chapter of the A1/A2 Learn path. A learner taps the chapter, watches the coach, speaks the lines, then has a four-line conversation. Hindi is the mother-tongue line on the cards.</p>
+  <h1>Unit 1 · Easy Small Talk</h1>
+  <p class="lede">The first two chapters of the A1/A2 Learn path. Pick a chapter, then step through it the way a learner does. Hindi is the mother-tongue line on the cards.</p>
+  <div class="jumps" id="chapters"></div>
   <div class="jumps" id="jumps"></div>
 </header>
 <main>
@@ -117,7 +118,7 @@
   <aside class="side" id="side"></aside>
 </main>
 <script>
-const steps = [
+const weatherSteps = [
   {
     phase: "Path",
     title: "Learn opens on this chapter",
@@ -345,37 +346,367 @@ function lines(pairs, foot) {
   const body = pairs.map(([en, hi]) => `<div class="card"><div class="en">${en}</div><div class="hi">${hi}</div></div>`).join("");
   return `<div class="screen-lines">${body}${foot ? `<p class="note">${foot}</p>` : ""}</div>`;
 }
+function chips(pairs, foot) {
+  const body = pairs.map(([en, hi]) => `<span class="chip">${en} · ${hi}</span>`).join("");
+  return `<div class="words">${body}</div>${foot ? `<p class="note">${foot}</p>` : ""}`;
+}
 function turns(rows) {
   return rows.map(([ask, gloss, hint, reply]) => `<div class="turn"><div class="label">Coach</div><div class="en">${ask}</div><div class="hi">${gloss}</div><div class="label" style="margin-top:8px">Hint, if they tap it</div><div class="en">${hint}</div><div class="label" style="margin-top:8px">Coach after a matching answer</div><div class="en">${reply}</div></div>`).join("");
 }
 
-const phases = [...new Set(steps.map(s => s.phase))];
+const feelingSteps = [
+  {
+    phase: "Path",
+    title: "Second chapter",
+    kicker: "Unit 1 · Easy Small Talk",
+    screen: `
+      <p class="path-unit">UNIT 1 · Easy Small Talk</p>
+      <div class="row"><div class="en">How's the weather</div><div class="hi">Finished, or still ahead if this one is next</div></div>
+      <div class="chapter"><div class="dot"></div><div><div class="en">How are you feeling</div><div class="hi">This chapter</div></div></div>`,
+    aside: "After How's the weather, the path moves to How are you feeling. The learner says how they feel, and the short forms I'm, She's, He's, It's, They're, We're, and You're."
+  },
+  {
+    phase: "Path",
+    title: "Five exercises, in this order",
+    kicker: "How are you feeling",
+    screen: `
+      <div class="sheet">
+        <div class="row"><div class="en">Video lesson</div></div>
+        <div class="row"><div class="en">Speaking Drill</div></div>
+        <div class="row"><div class="en">Grammar</div></div>
+        <div class="row"><div class="en">Vocab</div></div>
+        <div class="row"><div class="en">Roleplay</div></div>
+      </div>
+      <p class="note">A check is saved on the phone when an exercise is finished.</p>`,
+    aside: "This chapter adds Grammar and Vocab. Weather did not have those."
+  },
+  {
+    phase: "Video",
+    title: "Hello, then I'm ready",
+    kicker: "Video lesson · 1 of 7",
+    screen: clip(
+      ["Hi! I'm Elsa. I'm happy you're here.", "Are you ready to speak? Say it with me."],
+      ["नमस्ते! मैं Elsa हूँ। मुझे खुशी है कि आप यहाँ हैं।", "क्या आप बोलने के लिए तैयार हैं? मेरे साथ बोलिए।"],
+      "I'm ready.",
+      [["I'm <span class='blank'></span>", "मैं तैयार हूँ।"]]
+    ),
+    aside: "The coach welcomes them. The learner says I'm ready, with ready hidden until it is heard."
+  },
+  {
+    phase: "Video",
+    title: "I am becomes I'm",
+    kicker: "Video lesson · 2 of 7",
+    screen: clip(
+      ["When I said I'm, I did not say I am.", "Say I am really fast. I am. I am. I am.", "Hear it? It turns into I'm."],
+      ["जब मैंने I'm कहा, मैंने I am नहीं कहा।", "I am को बहुत तेज़ बोलिए। I am. I am. I am.", "सुना? यह I'm बन जाता है।"],
+      "I am → I'm",
+      [["I'm", "मैं हूँ।"]]
+    ),
+    aside: "This is the short form. Saying I am quickly turns into I'm. The card does not treat I'm good as saying no."
+  },
+  {
+    phase: "Video",
+    title: "How are you, and how are you feeling",
+    kicker: "Video lesson · 3 of 7",
+    screen: clip(
+      ["Someone asks, How are you?", "You say, I'm good.", "If they ask, How are you feeling?", "You can say, I'm happy."],
+      ["कोई पूछे, How are you?", "आप बोलें, I'm good.", "अगर वे पूछें, How are you feeling?", "आप बोल सकते हैं, I'm happy."],
+      "How are you? · I'm good. · How are you feeling? · I'm happy.",
+      [
+        ["I'm <span class='blank'></span>", "मैं ठीक हूँ।"],
+        ["I'm <span class='blank'></span>", "मैं खुश हूँ।"]
+      ]
+    ),
+    aside: "How are you is answered with I'm good. How are you feeling is answered with I'm happy."
+  },
+  {
+    phase: "Video",
+    title: "She, he, and it",
+    kicker: "Video lesson · 4 of 7",
+    screen: clip(
+      ["We do this with other words too.", "She is becomes She's.", "He is becomes He's.", "It is becomes It's."],
+      ["हम बाकी शब्दों के साथ भी ऐसा करते हैं।", "She is, She's बन जाता है।", "He is, He's बन जाता है।", "It is, It's बन जाता है।"],
+      "She's · He's · It's",
+      [
+        ["She's", "वह (स्त्रीलिंग) है"],
+        ["He's", "वह (पुल्लिंग) है"],
+        ["It's", "यह है"]
+      ]
+    ),
+    aside: "Hindi वह marks gender. She's is feminine, He's is masculine, and It's is यह, with no gender mark."
+  },
+  {
+    phase: "Video",
+    title: "Add a word",
+    kicker: "Video lesson · 5 of 7",
+    screen: clip(
+      ["Now add a word.", "He's smart.", "She's intelligent.", "It's cute.", "It's fun."],
+      ["अब एक शब्द जोड़िए।", "He's smart.", "She's intelligent.", "It's cute.", "It's fun."],
+      "He's smart. · She's intelligent. · It's cute. · It's fun.",
+      [
+        ["He's <span class='blank'></span>", "वह (पुल्लिंग) होशियार है।"],
+        ["She's <span class='blank'></span>", "वह (स्त्रीलिंग) बुद्धिमान है।"],
+        ["It's <span class='blank'></span>", "यह प्यारा है।"],
+        ["It's <span class='blank'></span>", "यह मज़ेदार है।"]
+      ]
+    ),
+    aside: "The short form stays visible. The describing word is hidden until the learner says it."
+  },
+  {
+    phase: "Video",
+    title: "They, we, and you",
+    kicker: "Video lesson · 6 of 7",
+    screen: clip(
+      ["Lastly, the short version of are.", "They are becomes They're.", "We are becomes We're.", "You are becomes You're."],
+      ["आखिर में, are का छोटा रूप।", "They are, They're बन जाता है।", "We are, We're बन जाता है।", "You are, You're बन जाता है।"],
+      "They're · We're · You're",
+      [
+        ["They're", "वे हैं"],
+        ["We're", "हम हैं"],
+        ["You're", "आप हैं"],
+        ["You're <span class='blank'></span>", "आप तैयार हैं।"],
+        ["They're <span class='blank'></span>", "वे खुश हैं।"],
+        ["We're <span class='blank'></span>", "हम होशियार हैं।"]
+      ]
+    ),
+    aside: "First the short form alone, then the same forms with ready, happy, and smart."
+  },
+  {
+    phase: "Video",
+    title: "Goodbye, then the drill",
+    kicker: "Video lesson · 7 of 7",
+    screen: `
+      <div class="bubble"><div class="label">On screen</div><div class="en">Bye!</div></div>
+      <div class="bubble"><div class="label">Coach, English</div><div class="en">Wow, you are amazing. You can say I'm, She's, and They're. I will meet you in Speaking Drill next. Bye!</div></div>
+      <div class="bubble"><div class="label">Coach, Hindi</div><div class="hi">वाह, आप कमाल के हो। अब आप I'm, She's, और They're बोल सकते हैं। अगली बार Speaking Drill में मिलते हैं। बाय!</div></div>`,
+    aside: "The video ends here. Speaking Drill is next."
+  },
+  {
+    phase: "Drill",
+    title: "Speaking Drill, four series",
+    kicker: "Speaking Drill",
+    screen: `
+      <div class="row"><div class="label">Series 1</div><div class="en">I'm ready, I'm good, I'm happy</div></div>
+      <div class="row"><div class="label">Series 2</div><div class="en">She's, He's, It's, then a word</div></div>
+      <div class="row"><div class="label">Series 3</div><div class="en">You're, They're, We're, then a word</div></div>
+      <div class="row"><div class="label">Series 4</div><div class="en">The coach asks. The learner answers.</div></div>`,
+    aside: "The first three series show the Hindi and hide the English until the learner speaks. The last series is a short back-and-forth."
+  },
+  {
+    phase: "Drill",
+    title: "Series 1 · how I feel",
+    kicker: "Speaking Drill",
+    screen: lines([
+      ["I'm ready.", "मैं तैयार हूँ।"],
+      ["I'm good.", "मैं ठीक हूँ।"],
+      ["I'm happy.", "मैं खुश हूँ।"]
+    ]),
+    aside: "Three lines from the video. Hindi is on the card. English starts blank."
+  },
+  {
+    phase: "Drill",
+    title: "Series 2 · she, he, and it",
+    kicker: "Speaking Drill",
+    screen: lines([
+      ["She's", "वह (स्त्रीलिंग) है"],
+      ["He's", "वह (पुल्लिंग) है"],
+      ["It's", "यह है"],
+      ["He's smart.", "वह (पुल्लिंग) होशियार है।"],
+      ["She's intelligent.", "वह (स्त्रीलिंग) बुद्धिमान है।"],
+      ["It's cute.", "यह प्यारा है।"],
+      ["It's fun.", "यह मज़ेदार है।"]
+    ]),
+    aside: "The short form first, then the same forms with a describing word."
+  },
+  {
+    phase: "Drill",
+    title: "Series 3 · you, they, and we",
+    kicker: "Speaking Drill",
+    screen: lines([
+      ["You're", "आप हैं"],
+      ["They're", "वे हैं"],
+      ["We're", "हम हैं"],
+      ["You're ready.", "आप तैयार हैं।"],
+      ["They're happy.", "वे खुश हैं।"],
+      ["We're smart.", "हम होशियार हैं।"]
+    ]),
+    aside: "Same pattern as series 2, for you, they, and we."
+  },
+  {
+    phase: "Drill",
+    title: "Series 4 · answer the coach",
+    kicker: "Speaking Drill",
+    screen: `
+      <div class="turn"><div class="label">Coach</div><div class="en">How are you?</div><div class="label" style="margin-top:8px">Learner</div><div class="en">I'm <span class="blank"></span></div><div class="hi">मैं ठीक हूँ।</div></div>
+      <div class="turn"><div class="label">Coach</div><div class="en">Nice! How are you feeling?</div><div class="label" style="margin-top:8px">Learner</div><div class="en">I'm <span class="blank"></span></div><div class="hi">मैं खुश हूँ।</div></div>
+      <div class="turn"><div class="label">Coach</div><div class="en">Is she intelligent?</div><div class="label" style="margin-top:8px">Learner</div><div class="en">She's <span class="blank"></span></div><div class="hi">वह (स्त्रीलिंग) बुद्धिमान है।</div></div>
+      <div class="turn"><div class="label">Coach</div><div class="en">Are they happy?</div><div class="label" style="margin-top:8px">Learner</div><div class="en">They're <span class="blank"></span></div><div class="hi">वे खुश हैं।</div></div>`,
+    aside: "The short form stays on the card. The learner fills in good, happy, intelligent, and happy."
+  },
+  {
+    phase: "Grammar",
+    title: "Grammar, four series",
+    kicker: "Grammar",
+    screen: `
+      <div class="row"><div class="en">Using pronouns</div><div class="hi">सर्वनाम</div></div>
+      <div class="row"><div class="en">Am, is, are</div></div>
+      <div class="row"><div class="en">Make them short</div><div class="hi">छोटा रूप</div></div>
+      <div class="row"><div class="en">Put them together</div><div class="hi">साथ में बोलें</div></div>`,
+    aside: "Each series opens with a short explanation, then the learner says every line, then says the same lines again with the English hidden until Hint."
+  },
+  {
+    phase: "Grammar",
+    title: "Using pronouns",
+    kicker: "Grammar · 1 of 4",
+    screen: chips([
+      ["I", "मैं"], ["You", "तुम"], ["He", "वह (पुल्लिंग)"], ["She", "वह (स्त्रीलिंग)"],
+      ["It", "यह"], ["We", "हम"], ["They", "वे"], ["You", "आप"]
+    ], "Reena is happy becomes She is happy. रीना खुश है। → वह (स्त्रीलिंग) खुश है।"),
+    aside: "Instead of repeating someone's name, they use a short word. Each word is spoken, then hidden and spoken again."
+  },
+  {
+    phase: "Grammar",
+    title: "Am, is, are",
+    kicker: "Grammar · 2 of 4",
+    screen: chips([
+      ["I am", "मैं हूँ"], ["You are", "तुम हो"], ["He is", "वह (पुल्लिंग) है"], ["She is", "वह (स्त्रीलिंग) है"],
+      ["It is", "यह है"], ["We are", "हम हैं"], ["They are", "वे हैं"], ["You are", "आप हैं"]
+    ], "Choose the word that matches."),
+    aside: "The same pronouns, now with am, is, or are."
+  },
+  {
+    phase: "Grammar",
+    title: "Make them short",
+    kicker: "Grammar · 3 of 4",
+    screen: chips([
+      ["I'm", "मैं हूँ"], ["You're", "तुम हो"], ["He's", "वह (पुल्लिंग) है"], ["She's", "वह (स्त्रीलिंग) है"],
+      ["It's", "यह है"], ["We're", "हम हैं"], ["They're", "वे हैं"], ["You're", "आप हैं"]
+    ], "Say it fast, and two words become one. The words छोटा रूप stay written and are not spoken."),
+    aside: "I am becomes I'm, she is becomes She's, they are becomes They're, and the rest follow."
+  },
+  {
+    phase: "Grammar",
+    title: "Put them together",
+    kicker: "Grammar · 4 of 4",
+    screen: chips([
+      ["They're busy.", "वे व्यस्त हैं।"], ["They're happy.", "वे खुश हैं।"], ["I'm smart.", "मैं होशियार हूँ।"],
+      ["He's intelligent.", "वह (पुल्लिंग) बुद्धिमान है।"], ["He's tired.", "वह (पुल्लिंग) थका है।"],
+      ["You're late.", "आप लेट हैं।"], ["We're tired.", "हम थके हैं।"], ["It's hot.", "यह गर्म है।"],
+      ["It's chilly.", "यह ठंडा है।"], ["She's hungry.", "वह (स्त्रीलिंग) भूखी है।"]
+    ], "A pronoun, am / is / are, and a word."),
+    aside: "Full sentences. Gender stays marked on वह for people."
+  },
+  {
+    phase: "Vocab",
+    title: "Vocab, three series",
+    kicker: "Vocab",
+    screen: `
+      <div class="row"><div class="label">Series 1</div><div class="en">Words already used</div></div>
+      <div class="row"><div class="label">Series 2</div><div class="en">New feeling words, hidden until Hint</div></div>
+      <div class="row"><div class="label">Series 3</div><div class="en">Short sentences, then the same sentences hidden</div></div>`,
+    aside: "Known words first, then new ones, then sentences that mix both."
+  },
+  {
+    phase: "Vocab",
+    title: "Words they already know",
+    kicker: "Vocab · 1 of 3",
+    screen: chips([
+      ["happy", "मैं खुश हूँ"], ["good", "मैं ठीक हूँ"], ["smart", "होशियार"], ["fun", "मज़ेदार"],
+      ["ready", "तैयार"], ["hot", "गर्म"], ["chilly", "ठंडा"]
+    ]),
+    aside: "The English is on the card. These words already appeared in the video."
+  },
+  {
+    phase: "Vocab",
+    title: "New feeling words",
+    kicker: "Vocab · 2 of 3",
+    screen: chips([
+      ["sad", "उदास"], ["tired", "थका हुआ"], ["hungry", "भूखा"], ["excited", "उत्साहित"],
+      ["bored", "बोर"], ["angry", "गुस्से में"], ["sleepy", "ऊँघ रहा"], ["great", "बहुत अच्छा"]
+    ], "The English stays hidden until Hint."),
+    aside: "New words. The learner hears the Hindi and reveals the English from the hint."
+  },
+  {
+    phase: "Vocab",
+    title: "Short sentences",
+    kicker: "Vocab · 3 of 3",
+    screen: chips([
+      ["I'm happy.", "मैं खुश हूँ।"], ["I'm good.", "मैं ठीक हूँ।"], ["It's fun.", "यह मज़ेदार है।"],
+      ["He's smart.", "वह (पुल्लिंग) होशियार है।"], ["I'm sad.", "मैं उदास हूँ।"], ["I'm tired.", "मैं थका हूँ।"],
+      ["She's hungry.", "वह (स्त्रीलिंग) भूखी है।"], ["We're excited.", "हम उत्साहित हैं।"],
+      ["They're bored.", "वे बोर हो गए हैं।"], ["You're great.", "आप बहुत अच्छे हैं।"]
+    ], "Said once with the English showing, then again with the English hidden."),
+    aside: "They're bored in Hindi is वे बोर हो गए हैं।"
+  },
+  {
+    phase: "Roleplay",
+    title: "A trip to Tokyo",
+    kicker: "Roleplay · Section 1: टोक्यो की यात्रा",
+    screen: `
+      <p class="note">छोटे रूप में जवाब दें।</p>
+      ${turns([
+        ["Hi! I heard you traveled to Tokyo recently. How is the weather there?", "नमस्ते! मैंने सुना आप हाल ही में टोक्यो गए थे। वहाँ मौसम कैसा है?", "It's nice and sunny.", "It's sunny. Tokyo sounds lovely!"],
+        ["How are you feeling after the trip?", "यात्रा के बाद आप कैसा महसूस कर रहे हैं?", "I'm tired.", "You're tired. Rest a little."],
+        ["How is your sister doing at her new job?", "आपकी बहन अपनी नई नौकरी में कैसी है?", "She's busy.", "She's busy. A new job is a lot!"],
+        ["Is she happy there?", "क्या वह (स्त्रीलिंग) वहाँ खुश है?", "She's happy.", "She's happy. That's great!"],
+        ["How about your friends in Tokyo? Are they bored?", "टोक्यो में आपके दोस्त कैसे हैं? क्या वे बोर हो गए हैं?", "They're happy.", "They're happy. Sounds like a good day!"],
+        ["And you? Are you ready for the next trip?", "और आप? क्या आप अगली यात्रा के लिए तैयार हैं?", "I'm ready.", "You're ready. Have a good trip!"]
+      ])}`,
+    aside: "Six questions. The hints are ways to answer, and they stay closed until tapped. A matching answer moves on. The coach's reply follows the word she hears, such as rainy, tired, or excited."
+  }
+];
+
+const chapters = [
+  { name: "1 · How's the weather", steps: weatherSteps },
+  { name: "2 · How are you feeling", steps: feelingSteps }
+];
+let chapter = 0;
 let index = 0;
 const phone = document.getElementById("phone");
 const side = document.getElementById("side");
 const count = document.getElementById("count");
 const jumps = document.getElementById("jumps");
+const chapterBar = document.getElementById("chapters");
 
-phases.forEach(phase => {
+chapters.forEach((item, i) => {
   const b = document.createElement("button");
   b.type = "button";
-  b.textContent = phase;
-  b.addEventListener("click", () => show(steps.findIndex(s => s.phase === phase)));
-  jumps.appendChild(b);
+  b.textContent = item.name;
+  b.addEventListener("click", () => { chapter = i; show(0); });
+  chapterBar.appendChild(b);
 });
 
+function steps() { return chapters[chapter].steps; }
+
+function paintJumps() {
+  jumps.replaceChildren();
+  [...new Set(steps().map(s => s.phase))].forEach(phase => {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.textContent = phase;
+    b.addEventListener("click", () => show(steps().findIndex(s => s.phase === phase)));
+    jumps.appendChild(b);
+  });
+}
+
 function show(i) {
-  index = Math.max(0, Math.min(steps.length - 1, i));
-  const step = steps[index];
+  const list = steps();
+  index = Math.max(0, Math.min(list.length - 1, i));
+  const step = list[index];
+  paintJumps();
   phone.innerHTML = `<p class="kicker">${step.kicker}</p><h2>${step.title}</h2><div class="screen">${step.screen}</div>`;
   side.innerHTML = `<h3>${step.phase}</h3><p>${step.aside}</p>`;
-  count.textContent = `${index + 1} of ${steps.length}`;
+  count.textContent = `${index + 1} of ${list.length}`;
   document.getElementById("back").disabled = index === 0;
-  document.getElementById("next").textContent = index === steps.length - 1 ? "Done" : "Next";
-  [...jumps.children].forEach(b => b.setAttribute("aria-current", b.textContent === step.phase ? "true" : "false"));
+  document.getElementById("next").textContent = index === list.length - 1 ? "Done" : "Next";
+  [...chapterBar.children].forEach((b, i) => b.setAttribute("aria-current", i === chapter ? "true" : "false"));
+  [...jumps.children].forEach(b => {
+    if (b.textContent === step.phase) b.setAttribute("aria-current", "true");
+    else b.removeAttribute("aria-current");
+  });
 }
 document.getElementById("back").addEventListener("click", () => show(index - 1));
-document.getElementById("next").addEventListener("click", () => { if (index < steps.length - 1) show(index + 1); });
+document.getElementById("next").addEventListener("click", () => { if (index < steps().length - 1) show(index + 1); });
 document.addEventListener("keydown", (e) => {
   if (e.key === "ArrowRight") show(index + 1);
   if (e.key === "ArrowLeft") show(index - 1);
