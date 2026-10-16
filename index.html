@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How's the weather — lesson flow</title>
+<style>
+  :root {
+    --ink: #1c1915;
+    --muted: #6b645c;
+    --line: #e4ddd4;
+    --paper: #f6f3ee;
+    --card: #fff;
+    --phone: #141820;
+    --phone-2: #1e2430;
+    --soft: #aeb6c4;
+    --blue: #7eb6ff;
+    --hi: #d7c4a3;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+  }
+  header {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 28px 20px 8px;
+  }
+  h1 { font-size: 28px; font-weight: 600; letter-spacing: -0.03em; margin: 0 0 6px; }
+  .lede { margin: 0; color: var(--muted); font-size: 16px; line-height: 1.45; max-width: 62ch; }
+  .jumps { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px; }
+  .jumps button, .nav button {
+    border: 1px solid var(--line);
+    background: var(--card);
+    color: var(--ink);
+    border-radius: 999px;
+    padding: 8px 14px;
+    font: inherit;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  .jumps button[aria-current="true"] { background: var(--ink); color: #fff; border-color: var(--ink); }
+  main {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 12px 20px 48px;
+    display: grid;
+    grid-template-columns: minmax(0, 390px) minmax(0, 1fr);
+    gap: 28px;
+    align-items: start;
+  }
+  .stage { position: sticky; top: 16px; }
+  .phone {
+    background: var(--phone);
+    color: #fff;
+    border-radius: 28px;
+    min-height: 640px;
+    padding: 22px 18px 18px;
+    display: flex;
+    flex-direction: column;
+  }
+  .kicker { color: var(--soft); font-size: 12px; letter-spacing: 0.04em; text-transform: uppercase; margin: 0 0 6px; }
+  .phone h2 { font-size: 22px; font-weight: 600; margin: 0 0 14px; letter-spacing: -0.02em; }
+  .screen { flex: 1; }
+  .note { color: #c9d0db; font-size: 14px; line-height: 1.45; margin: 0 0 12px; }
+  .bubble, .card, .row, .turn {
+    background: var(--phone-2);
+    border-radius: 16px;
+    padding: 12px 14px;
+    margin: 0 0 8px;
+  }
+  .en { font-size: 16px; line-height: 1.35; }
+  .hi { color: var(--hi); font-size: 14px; line-height: 1.4; margin-top: 4px; }
+  .label { color: var(--soft); font-size: 12px; margin-bottom: 4px; }
+  .blank { display: inline-block; min-width: 2.2em; border-bottom: 1.5px solid #fff; margin: 0 3px; }
+  .sheet { background: #262c3a; border-radius: 18px; padding: 8px; }
+  .sheet .row { background: transparent; border-bottom: 1px solid #343b4c; border-radius: 0; margin: 0; }
+  .sheet .row:last-child { border-bottom: 0; }
+  .path-unit { color: var(--blue); font-size: 13px; margin-bottom: 8px; }
+  .chapter {
+    display: flex; align-items: center; gap: 10px;
+    background: #243044; border-radius: 16px; padding: 12px;
+    outline: 2px solid var(--blue);
+  }
+  .dot { width: 36px; height: 36px; border-radius: 50%; background: #3a445c; flex: none; }
+  .words { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+  .chip { background: #2a3142; border-radius: 999px; padding: 6px 10px; font-size: 13px; }
+  .side h3 { margin: 0 0 8px; font-size: 18px; }
+  .side p { margin: 0 0 10px; color: var(--muted); line-height: 1.5; }
+  .nav { display: flex; justify-content: space-between; align-items: center; margin-top: 16px; gap: 8px; }
+  .count { color: var(--soft); font-size: 13px; }
+  @media (max-width: 760px) {
+    main { grid-template-columns: 1fr; }
+    .stage { position: static; }
+    .phone { min-height: 0; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>How's the weather</h1>
+  <p class="lede">Unit 1, first chapter of the A1/A2 Learn path. A learner taps the chapter, watches the coach, speaks the lines, then has a four-line conversation. Hindi is the mother-tongue line on the cards.</p>
+  <div class="jumps" id="jumps"></div>
+</header>
+<main>
+  <div class="stage">
+    <div class="phone" id="phone"></div>
+    <div class="nav">
+      <button type="button" id="back">Back</button>
+      <span class="count" id="count"></span>
+      <button type="button" id="next">Next</button>
+    </div>
+  </div>
+  <aside class="side" id="side"></aside>
+</main>
+<script>
+const steps = [
+  {
+    phase: "Path",
+    title: "Learn opens on this chapter",
+    kicker: "Unit 1 · Easy Small Talk",
+    screen: `
+      <p class="path-unit">UNIT 1 · Easy Small Talk</p>
+      <div class="chapter"><div class="dot"></div><div><div class="en">How's the weather</div><div class="hi">Current chapter</div></div></div>
+      <p class="note">The path scrolls here and this chapter pulses until its exercises are done.</p>`,
+    aside: "This is the first lesson a new A1/A2 learner sees. Later chapters in the unit are How are you feeling, Countries and Nationalities, How's it going, How's life, How to ask questions, and Let's review."
+  },
+  {
+    phase: "Path",
+    title: "Three exercises, in this order",
+    kicker: "How's the weather",
+    screen: `
+      <div class="sheet">
+        <div class="row"><div class="en">Video lesson</div></div>
+        <div class="row"><div class="en">Speaking Drill</div></div>
+        <div class="row"><div class="en">Roleplay</div></div>
+      </div>
+      <p class="note">Tap outside the list to close it. A check is saved on the phone when an exercise is finished.</p>`,
+    aside: "This chapter has no Grammar and no Vocab. The learner does the video, then the speaking drill, then the roleplay."
+  },
+  {
+    phase: "Video",
+    title: "Hello, then say it",
+    kicker: "Video lesson · 1 of 7",
+    screen: clip(
+      ["Hi! Nice to meet you.", "Today, we will learn a little small talk.", "Where you live, and how is the weather.", "Ready? Say: Nice to meet you."],
+      ["नमस्ते! आपसे मिलकर खुशी हुई।", "आज हम थोड़ी छोटी-छोटी बातें सीखेंगे।", "आप कहाँ रहते हैं, और मौसम कैसा है।", "तैयार? बोलिए: Nice to meet you."],
+      "Hi! Nice to meet you!",
+      [
+        ["Nice to meet you.", "आपसे मिलकर अच्छा लगा।"],
+        ["<span class='blank'></span> to <span class='blank'></span> you.", "आपसे मिलकर अच्छा लगा।"]
+      ]
+    ),
+    aside: "The coach speaks first. Then the learner says the line, and says it again with Nice and meet hidden until the mic hears them. Next still moves on if the mic misses."
+  },
+  {
+    phase: "Video",
+    title: "Say where you are",
+    kicker: "Video lesson · 2 of 7",
+    screen: clip(
+      ["Let's start with where you are.", "Say: I'm in. Then say the city.", "I'm in San Francisco. I'm in New York.", "Now you try."],
+      ["चलिए शुरू करते हैं — आप कहाँ हैं।", "बोलिए: I'm in. फिर शहर का नाम।", "I'm in San Francisco. I'm in New York.", "अब आप बोलिए। I'm in, और आपका शहर।"],
+      "I'm in San Francisco / I'm in New York",
+      [
+        ["I'm in San Francisco.", "मैं सैन फ्रांसिस्को में हूँ।"],
+        ["I'm <span class='blank'></span> London.", "मैं लंदन में हूँ।"],
+        ["<span class='blank'></span> <span class='blank'></span> New York.", "मैं न्यूयॉर्क में हूँ।"]
+      ]
+    ),
+    aside: "The pattern is I'm in, plus a city. Each card gets a little harder: the whole line, then one missing word, then two."
+  },
+  {
+    phase: "Video",
+    title: "Ask about the weather",
+    kicker: "Video lesson · 3 of 7",
+    screen: clip(
+      ["Now ask about the weather.", "How's the weather in San Francisco?", "How's the weather in Sydney?", "You can ask this about any city."],
+      ["अब मौसम के बारे में पूछिए।", "How's the weather in San Francisco?", "How's the weather in Sydney?", "आप किसी भी शहर के बारे में ऐसा पूछ सकते हैं।"],
+      "How's the weather in San Francisco? / in Sydney?",
+      [
+        ["How's the weather?", "मौसम कैसा है?"],
+        ["How's the weather in Sydney?", "सिडनी में मौसम कैसा है?"],
+        ["How's <span class='blank'></span> <span class='blank'></span> <span class='blank'></span> <span class='blank'></span> York?", "न्यूयॉर्क में मौसम कैसा है?"],
+        ["<span class='blank'></span> <span class='blank'></span> <span class='blank'></span> <span class='blank'></span> <span class='blank'></span> Francisco?", "सैन फ्रांसिस्को में मौसम कैसा है?"]
+      ]
+    ),
+    aside: "The question starts short, then adds a city, then hides more of the words."
+  },
+  {
+    phase: "Video",
+    title: "Easy weather answers",
+    kicker: "Video lesson · 4 of 7",
+    screen: clip(
+      ["Here are easy answers.", "The weather is windy.", "It's chilly. Chilly means a little cold.", "It's hot.", "It's humid. Humid means the air feels wet."],
+      ["ये आसान जवाब हैं।", "मौसम में तेज़ हवा है।", "It's chilly. Chilly का मतलब थोड़ा ठंडा।", "It's hot.", "It's humid. Humid का मतलब हवा में नमी है।"],
+      "It's windy · It's chilly · It's hot · It's humid",
+      [
+        ["It's windy.", "हवा चल रही है।"],
+        ["It's chilly.", "ठंड है।"],
+        ["It's hot.", "गर्मी है।"],
+        ["It's humid.", "उमस है।"]
+      ]
+    ),
+    aside: "Four short answers. The learner says each one after the coach."
+  },
+  {
+    phase: "Video",
+    title: "Hear two of them again",
+    kicker: "Video lesson · 5 of 7",
+    screen: clip(
+      ["Let's hear them together.", "It's chilly.", "It's hot.", "Say the one that matches your day."],
+      ["चलिए इन्हें साथ में सुनते हैं।", "It's chilly.", "It's hot.", "जो आपके दिन जैसा हो, वही बोलिए।"],
+      "It's chilly · It's hot",
+      [
+        ["It's chilly.", "ठंड है।"],
+        ["It's hot.", "गर्मी है।"]
+      ]
+    ),
+    aside: "A short recap of chilly and hot before the learner's own turn."
+  },
+  {
+    phase: "Video",
+    title: "Your turn",
+    kicker: "Video lesson · 6 of 7",
+    screen: clip(
+      ["Your turn.", "Tell me where you are, and how the weather is.", "You can say: I'm in, and then, It's."],
+      ["अब आपकी बारी।", "बताइए आप कहाँ हैं, और मौसम कैसा है।", "आप बोल सकते हैं: I'm in, और फिर, It's."],
+      "I'm in … · It's …",
+      [
+        ["I'm in <span class='blank'></span> Francisco.", "मैं सैन फ्रांसिस्को में हूँ।"],
+        ["It's <span class='blank'></span>", "ठंड है।"]
+      ]
+    ),
+    aside: "The learner fills in the city and the weather word."
+  },
+  {
+    phase: "Video",
+    title: "Goodbye, then the drill",
+    kicker: "Video lesson · 7 of 7",
+    screen: `
+      <div class="bubble"><div class="label">On screen</div><div class="en">Bye!</div></div>
+      <div class="bubble"><div class="label">Coach, English</div><div class="en">Wow, you are amazing. Now, you can confidently have a small talk. I will meet you in Speaking Drill next. Bye!</div></div>
+      <div class="bubble"><div class="label">Coach, Hindi</div><div class="hi">वाह, आप कमाल के हो। अब आप आत्मविश्वास से छोटी-छोटी बातें कर सकते हैं। अगली बार Speaking Drill में मिलते हैं। बाय!</div></div>`,
+    aside: "The video lesson ends here. The next exercise is the Speaking Drill."
+  },
+  {
+    phase: "Drill",
+    title: "Speaking Drill, four series",
+    kicker: "Speaking Drill",
+    screen: `
+      <div class="row"><div class="label">Series 1</div><div class="en">Ask how the weather is</div></div>
+      <div class="row"><div class="label">Series 2</div><div class="en">Weather words, then say the sentence</div></div>
+      <div class="row"><div class="label">Series 3</div><div class="en">Two weather words together</div></div>
+      <div class="row"><div class="label">Series 4</div><div class="en">The coach asks. The learner answers.</div></div>`,
+    aside: "Each series is a little harder. Series 1 shows the Hindi and the learner says the English. Series 2 hides the Hindi so they have to listen."
+  },
+  {
+    phase: "Drill",
+    title: "Series 1 · ask the question",
+    kicker: "Speaking Drill",
+    screen: lines([
+      ["How's the weather", "मौसम कैसा है?"],
+      ["How's the weather in the U.S.?", "अमेरिका में मौसम कैसा है?"],
+      ["How is the weather in Vietnam?", "वियतनाम में मौसम कैसा है?"],
+      ["How is the weather in Tokyo?", "टोक्यो में मौसम कैसा है?"],
+      ["How is the weather in New Delhi?", "नई दिल्ली में मौसम कैसा है?"],
+      ["How is the weather in Bangkok?", "बैंकॉक में मौसम कैसा है?"]
+    ]),
+    aside: "Hindi is on the card. The English starts blank and fills in as the learner says it."
+  },
+  {
+    phase: "Drill",
+    title: "Series 2 · listen, then say it",
+    kicker: "Speaking Drill",
+    screen: `
+      <div class="words">
+        <span class="chip">Humid · नम</span><span class="chip">foggy · कोहरा</span><span class="chip">rainy · बारिश</span>
+        <span class="chip">chilly · ठंड</span><span class="chip">hot · गर्म</span><span class="chip">windy · तेज़ हवा</span>
+      </div>
+      ${lines([
+        ["Foggy", "कोहरा"],
+        ["It's chilly", "ठंड है"],
+        ["It's cloudy", "बादल छाए हैं"],
+        ["It's rainy", "बारिश हो रही है"],
+        ["It's sunny", "धूप है"],
+        ["It's windy", "हवा चल रही है"],
+        ["It's humid", "उमस है"],
+        ["It's hot", "गर्मी है"]
+      ]).replace('class="screen-lines"', '')}
+      <p class="note">The Hindi is spoken and not written. This set of eight is practiced twice.</p>`,
+    aside: "A word board comes first and does not speak. Then each line is heard in Hindi and the learner says the English."
+  },
+  {
+    phase: "Drill",
+    title: "Series 3 · two ideas in one line",
+    kicker: "Speaking Drill",
+    screen: lines([
+      ["It's hot and humid", "गर्म और उमस भरा है।"],
+      ["It's nice and sunny", "मौसम अच्छा है और धूप निकली है।"],
+      ["It's cold and foggy", "ठंड है और कोहरा है।"],
+      ["It's cold and rainy", "ठंड है और बारिश हो रही है।"],
+      ["It's hot and muggy", "गर्मी है और उमस है।"],
+      ["It's windy and chilly", "हवा चल रही है और ठंडक है।"],
+      ["It's chilly and wet", "सर्द और गीला है।"],
+      ["It's cold and dry", "ठंड है और सूखा है।"]
+    ], "It's stays on screen. The rest is blank."),
+    aside: "It's is already visible. The learner supplies the rest. The Hindi sits under the line, smaller."
+  },
+  {
+    phase: "Drill",
+    title: "Series 4 · answer the coach",
+    kicker: "Speaking Drill",
+    screen: `
+      <div class="turn"><div class="label">Coach</div><div class="en">How's the weather in San Francisco? Try answering it!</div><div class="label" style="margin-top:8px">Learner</div><div class="en">It's nice and sunny</div><div class="hi">मौसम अच्छा है और धूप है।</div></div>
+      <div class="turn"><div class="label">Coach</div><div class="en">That's great, it's nice and sunny! Perfect day to go out. Where are you?</div><div class="label" style="margin-top:8px">Learner</div><div class="en">I'm <span class="blank"></span> <span class="blank"></span> Francisco</div><div class="hi">मैं सैन फ्रांसिस्को में हूँ।</div></div>
+      <div class="turn"><div class="label">Coach</div><div class="en">Great, I am in Los Angeles. Now, you ask me a question. Try it.</div><div class="label" style="margin-top:8px">Learner</div><div class="en">Great! <span class="blank"></span></div><div class="hi">लॉस एंजिल्स में मौसम कैसा है?</div></div>`,
+    aside: "Three short coach clips. After each one the learner answers. Shown words stay on the card; the rest stays blank until it is heard."
+  },
+  {
+    phase: "Roleplay",
+    title: "A four-line introduction",
+    kicker: "Roleplay · Section 1: परिचय",
+    screen: `
+      <p class="note">आइए पहले एक-दूसरे को जानें!</p>
+      ${turns([
+        ["Hi, my name is ELSA. What's your name?", "नमस्ते, मेरा नाम ELSA है। आपका नाम क्या है?", "My name is ...", "Nice to meet you, [name]!"],
+        ["Nice to meet you!", "आपसे मिलकर अच्छा लगा!", "Nice to meet you too!", "Great, [name]!"],
+        ["I am in America. Where are you?", "मैं अमेरिका में हूँ। आप कहाँ हैं?", "I am in ...", "You are in [place]. That sounds nice!"],
+        ["How is the weather in [place]?", "[place] में मौसम कैसा है?", "It's nice and sunny.", "It's sunny. A good day!"]
+      ])}`,
+    aside: "The hint is a way to answer, and it stays closed until the learner taps it. A heard answer moves on. The coach uses the name and the place in the next line. If the mic hears nothing, the learner can continue."
+  }
+];
+
+function clip(en, hi, onScreen, cards) {
+  const captions = en.map((line, i) => `<div class="en">${line}</div><div class="hi">${hi[i]}</div>`).join("");
+  const practice = cards.map(([say, gloss]) => `<div class="card"><div class="label">Learner says</div><div class="en">${say}</div><div class="hi">${gloss}</div></div>`).join("");
+  return `<div class="bubble"><div class="label">On screen</div><div class="en">${onScreen}</div></div>
+    <div class="bubble"><div class="label">Coach</div>${captions}</div>${practice}`;
+}
+function lines(pairs, foot) {
+  const body = pairs.map(([en, hi]) => `<div class="card"><div class="en">${en}</div><div class="hi">${hi}</div></div>`).join("");
+  return `<div class="screen-lines">${body}${foot ? `<p class="note">${foot}</p>` : ""}</div>`;
+}
+function turns(rows) {
+  return rows.map(([ask, gloss, hint, reply]) => `<div class="turn"><div class="label">Coach</div><div class="en">${ask}</div><div class="hi">${gloss}</div><div class="label" style="margin-top:8px">Hint, if they tap it</div><div class="en">${hint}</div><div class="label" style="margin-top:8px">Coach after a matching answer</div><div class="en">${reply}</div></div>`).join("");
+}
+
+const phases = [...new Set(steps.map(s => s.phase))];
+let index = 0;
+const phone = document.getElementById("phone");
+const side = document.getElementById("side");
+const count = document.getElementById("count");
+const jumps = document.getElementById("jumps");
+
+phases.forEach(phase => {
+  const b = document.createElement("button");
+  b.type = "button";
+  b.textContent = phase;
+  b.addEventListener("click", () => show(steps.findIndex(s => s.phase === phase)));
+  jumps.appendChild(b);
+});
+
+function show(i) {
+  index = Math.max(0, Math.min(steps.length - 1, i));
+  const step = steps[index];
+  phone.innerHTML = `<p class="kicker">${step.kicker}</p><h2>${step.title}</h2><div class="screen">${step.screen}</div>`;
+  side.innerHTML = `<h3>${step.phase}</h3><p>${step.aside}</p>`;
+  count.textContent = `${index + 1} of ${steps.length}`;
+  document.getElementById("back").disabled = index === 0;
+  document.getElementById("next").textContent = index === steps.length - 1 ? "Done" : "Next";
+  [...jumps.children].forEach(b => b.setAttribute("aria-current", b.textContent === step.phase ? "true" : "false"));
+}
+document.getElementById("back").addEventListener("click", () => show(index - 1));
+document.getElementById("next").addEventListener("click", () => { if (index < steps.length - 1) show(index + 1); });
+document.addEventListener("keydown", (e) => {
+  if (e.key === "ArrowRight") show(index + 1);
+  if (e.key === "ArrowLeft") show(index - 1);
+});
+show(0);
+</script>
+</body>
+</html>
